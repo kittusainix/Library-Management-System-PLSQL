@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Library Management System</title>
+<style>
+:root{--blue:#2563eb;--ink:#172033;--muted:#64748b;--line:#e6ebf2;--bg:#f5f7fb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--ink)}
+.wrap{max-width:1100px;margin:0 auto;padding:34px 22px}.eyebrow{font-size:13px;color:var(--muted);margin-bottom:8px}
+.hero{background:linear-gradient(115deg,#2563eb,#5551b8);border-radius:20px;padding:28px 30px;color:white;box-shadow:0 12px 30px #2c55ad25}
+.hero h1{margin:0 0 9px;font-size:27px}.hero p{margin:0;color:#e8edff;font-size:15px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:20px 0}.stat,.panel{background:white;border:1px solid var(--line);border-radius:16px;padding:20px}
+.stat .number{font-size:32px;font-weight:750;color:var(--blue)}.stat .label{color:var(--muted);margin-top:5px;font-size:14px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.tab{border:1px solid var(--line);background:#fff;color:#334155;padding:11px 17px;border-radius:10px;cursor:pointer;font-weight:600}.tab.active{background:var(--blue);color:white;border-color:var(--blue)}
+.panel h2{font-size:19px;margin:0 0 16px}.topline{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+button.primary{background:var(--blue);border:0;color:white;border-radius:9px;padding:10px 14px;font-weight:650;cursor:pointer}
+input,select{padding:10px 12px;border:1px solid #d9e1ec;border-radius:9px;font:inherit;background:white;min-width:0}
+.search{width:240px;max-width:100%}table{border-collapse:collapse;width:100%;margin-top:12px}th,td{text-align:left;padding:13px 10px;border-bottom:1px solid var(--line);font-size:14px}th{color:var(--muted);font-weight:650;background:#fafbfe}
+.pill{display:inline-block;border-radius:99px;padding:4px 9px;font-size:12px;font-weight:700;background:#e7f8ee;color:#16834a}.pill.low{background:#fff2d9;color:#9a6200}
+.note{color:var(--muted);font-size:13px;margin-top:18px}.hidden{display:none}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.formgrid label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted)}
+@media(max-width:650px){.wrap{padding:22px 14px}.stats{grid-template-columns:1fr}.hero{padding:23px}.hero h1{font-size:23px}.formgrid{grid-template-columns:1fr}table{min-width:620px}.tablewrap{overflow:auto}}
+</style></head>
+<body><main class="wrap">
+<div class="eyebrow">Website ka design · Project preview</div>
+<section class="hero"><h1>📚 Library Management System</h1><p>Books, members, issue &amp; return with automatic fines (Rs. 5 per late day)</p></section>
+<section class="stats">
+<div class="stat"><div class="number" id="bookCount">5</div><div class="label">Books</div></div>
+<div class="stat"><div class="number" id="copyCount">9</div><div class="label">Available Copies</div></div>
+<div class="stat"><div class="number" id="memberCount">3</div><div class="label">Members</div></div>
+</section>
+<nav class="tabs">
+<button class="tab active" data-tab="dashboard">Dashboard</button><button class="tab" data-tab="books">Books</button><button class="tab" data-tab="members">Members</button><button class="tab" data-tab="issues">Issue / Return</button>
+</nav>
+<section class="panel" id="dashboard"><h2>Dashboard overview</h2><p>Welcome to the Library Management System. Use the tabs to browse books, members, and issue/return records.</p><div class="note">Technologies: Oracle Database, SQL, PL/SQL aur Oracle APEX.</div><p class="note">PL/SQL database ka logic handle karega, jabki Oracle APEX website ke interface ko database se connect karega.</p></section>
+<section class="panel hidden" id="books"><div class="topline"><h2>Books</h2><input class="search" id="bookSearch" placeholder="Search books..."></div><div class="tablewrap"><table><thead><tr><th>Book ID</th><th>Title</th><th>Author</th><th>Category</th><th>Available</th></tr></thead><tbody id="bookRows"></tbody></table></div></section>
+<section class="panel hidden" id="members"><div class="topline"><h2>Members</h2><input class="search" id="memberSearch" placeholder="Search members..."></div><div class="tablewrap"><table><thead><tr><th>ID</th><th>Member name</th><th>Email</th><th>Phone</th></tr></thead><tbody id="memberRows"></tbody></table></div></section>
+<section class="panel hidden" id="issues"><h2>Issue / Return</h2><div class="formgrid"><label>Member<select id="memberSelect"></select></label><label>Book<select id="issueBookSelect"></select></label><label>Due date<input type="date" id="dueDate"></label><label>Late fine rate<input value="₹5 per day" disabled></label></div><p><button class="primary" id="issueBtn">Issue selected book (demo)</button></p><div class="tablewrap"><table><thead><tr><th>Issue ID</th><th>Book</th><th>Member</th><th>Due date</th><th>Status</th><th>Action</th></tr></thead><tbody id="issueRows"></tbody></table></div><p class="note">Demo actions sirf is browser preview mein hain. Permanent database save aur real PL/SQL processing ke liye SQL scripts ko Oracle APEX mein run karein.</p></section>
+<p class="note">Oracle APEX live version ke liye saath di gayi SQL scripts aur Hindi setup guide use karein.</p>
+</main>
+<script>
+const books=[
+{id:1,title:'Database System Concepts',author:'Abraham Silberschatz',category:'Database',total:3,available:3},
+{id:2,title:'Oracle PL/SQL Programming',author:'Steven Feuerstein',category:'Programming',total:2,available:2},
+{id:3,title:'Clean Code',author:'Robert C. Martin',category:'Programming',total:2,available:1},
+{id:4,title:'Computer Networks',author:'Andrew S. Tanenbaum',category:'Networking',total:2,available:2},
+{id:5,title:'Operating System Concepts',author:'Abraham Silberschatz',category:'Operating Systems',total:2,available:1}];
+const members=[{id:1,name:'Aarav Sharma',email:'aarav@example.com',phone:'9876501234'},{id:2,name:'Priya Verma',email:'priya@example.com',phone:'9876502345'},{id:3,name:'Himanshi Saini',email:'himanshi@example.com',phone:'9876503456'}];
+let issues=[],nextIssue=1;
+const $=id=>document.getElementById(id);
+function renderBooks(filter=''){$('bookRows').innerHTML=books.filter(b=>(b.title+' '+b.author+' '+b.category).toLowerCase().includes(filter.toLowerCase())).map(b=>`<tr><td>${b.id}</td><td>${b.title}</td><td>${b.author}</td><td>${b.category}</td><td><span class="pill ${b.available===0?'low':''}">${b.available} / ${b.total}</span></td></tr>`).join('')}
+function renderMembers(filter=''){$('memberRows').innerHTML=members.filter(m=>(m.name+' '+m.email).toLowerCase().includes(filter.toLowerCase())).map(m=>`<tr><td>${m.id}</td><td>${m.name}</td><td>${m.email}</td><td>${m.phone}</td></tr>`).join('')}
+function renderSelects(){$('memberSelect').innerHTML=members.map(m=>`<option value="${m.id}">${m.name}</option>`).join('');$('issueBookSelect').innerHTML=books.map(b=>`<option value="${b.id}" ${b.available===0?'disabled':''}>${b.title} (${b.available} available)</option>`).join('')}
+function renderIssues(){$('issueRows').innerHTML=issues.map(i=>`<tr><td>${i.id}</td><td>${i.book}</td><td>${i.member}</td><td>${i.due}</td><td><span class="pill ${i.status==='ISSUED'?'low':''}">${i.status}</span></td><td>${i.status==='ISSUED'?`<button class="primary" onclick="returnBook(${i.id})">Return</button>`:'—'}</td></tr>`).join('')||'<tr><td colspan="6">No issue records yet.</td></tr>'}
+function updateStats(){$('bookCount').textContent=books.length;$('copyCount').textContent=books.reduce((s,b)=>s+b.available,0);$('memberCount').textContent=members.length;renderSelects();renderBooks($('bookSearch').value);renderIssues()}
+document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b===btn));['dashboard','books','members','issues'].forEach(id=>$(id).classList.toggle('hidden',id!==btn.dataset.tab));}));
+$('bookSearch').addEventListener('input',e=>renderBooks(e.target.value));$('memberSearch').addEventListener('input',e=>renderMembers(e.target.value));
+$('issueBtn').addEventListener('click',()=>{let b=books.find(x=>x.id===+$('issueBookSelect').value),m=members.find(x=>x.id===+$('memberSelect').value),due=$('dueDate').value;if(!b||b.available<1){alert('No available copies.');return}if(!due){alert('Please select a due date.');return}b.available--;issues.push({id:nextIssue++,book:b.title,bookId:b.id,member:m.name,due,status:'ISSUED'});updateStats();alert('Demo: book issued. Oracle APEX version ke liye database scripts use karein.')});
+window.returnBook=id=>{let i=issues.find(x=>x.id===id);if(!i||i.status!=='ISSUED')return;i.status='RETURNED';let b=books.find(x=>x.id===i.bookId);b.available++;let days=Math.max(0,Math.floor((new Date()-new Date(i.due+'T00:00:00'))/86400000));alert('Demo: book returned. Late fine: ₹'+(days*5));updateStats()};
+$('dueDate').value=new Date(Date.now()+14*86400000).toISOString().slice(0,10);renderBooks();renderMembers();updateStats();
+</script></body></html>

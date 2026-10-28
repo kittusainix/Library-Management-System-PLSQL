@@ -1,0 +1,49 @@
+ORACLE APEX MEIN PAGE BANANE KA TARIKA
+
+A. Database setup
+- SQL Workshop > SQL Scripts > Upload
+- 01_schema_and_sample_data.sql upload karke Run karein.
+- 02_library_package.sql upload karke Run karein.
+- Object Browser mein LMS_BOOKS, LMS_MEMBERS, LMS_ISSUES aur package LMS_LIBRARY check karein.
+
+B. Application
+- App Builder > Create > New Application
+- Name: Library Management System
+- Create Application par click karein.
+
+C. Pages
+- Dashboard: Cards/regions for Total Books, Available Copies, Members.
+- Books: Report with Form on LMS_BOOKS.
+- Members: Report with Form on LMS_MEMBERS.
+- Issue / Return: Form based on LMS_ISSUES, or custom form with PL/SQL processes.
+
+D. Dashboard query (individual cards ke liye)
+Total Books:
+SELECT COUNT(*) AS total_books FROM lms_books;
+
+Available Copies:
+SELECT NVL(SUM(available_copies),0) AS available_copies FROM lms_books;
+
+Members:
+SELECT COUNT(*) AS total_members FROM lms_members;
+
+E. Books page report query
+SELECT book_id, title, author, category, isbn, total_copies, available_copies
+FROM lms_books
+ORDER BY title;
+
+F. Members page report query
+SELECT member_id, full_name, email, phone, joined_on
+FROM lms_members
+ORDER BY full_name;
+
+G. Issue / Return report query
+SELECT i.issue_id, b.title, m.full_name, i.issue_date, i.due_date,
+       i.return_date, i.fine_amount, i.status
+FROM lms_issues i
+JOIN lms_books b ON b.book_id = i.book_id
+JOIN lms_members m ON m.member_id = i.member_id
+ORDER BY i.issue_id DESC;
+
+H. Important
+APEX page item names (jaise P4_MEMBER_ID) aapki app mein alag ho sakte hain. PL/SQL process mein actual page item names use karein. Testing ke liye pehle sample records ke saath app chalayein.
